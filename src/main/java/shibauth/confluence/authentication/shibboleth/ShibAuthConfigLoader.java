@@ -157,6 +157,19 @@ public class ShibAuthConfigLoader {
                     config.isConvertToUTF8());
             }
 
+ 	    // Load purge.roles.limit property
+            String purgeRolesLimit = configProps.getProperty(
+                ShibAuthConstants.PURGE_ROLES_LIMIT);
+            if (purgeRolesLimit != null) {
+                config.setPurgeRolesLimit(Integer.valueOf(
+                    purgeRolesLimit).intValue());
+
+                if (log.isDebugEnabled()) {
+                    log.debug("Setting purge roles limit value to " +
+                        config.getPurgeRolesLimit());
+                }
+            }
+
             // Load dynamicheaders.output.tolowercase property
             // default is true when not existing
             config.setOutputToLowerCase(Boolean.valueOf(

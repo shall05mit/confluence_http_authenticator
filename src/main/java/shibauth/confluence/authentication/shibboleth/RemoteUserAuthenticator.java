@@ -314,6 +314,13 @@ public class RemoteUserAuthenticator extends ConfluenceAuthenticator {
             }
 
             Collection purgeMappers = config.getPurgeMappings();
+	    
+	    // limit the number of roles purged
+	    // add a counter
+	    int counter=0;
+	    // Load the value from the config
+	    int rolesLimit = config.getPurgeRolesLimit();
+	    log.debug("setting roles limit to " + rolesLimit);
 
             for (Iterator it = p.iterator(); it.hasNext();) {
                 Group group = (Group) it.next();
@@ -324,10 +331,12 @@ public class RemoteUserAuthenticator extends ConfluenceAuthenticator {
                     //run through the purgeMappers for this role
                     for (Iterator it2 = purgeMappers.iterator(); it2.hasNext();) {
                         GroupMapper mapper = (GroupMapper) it2.next();
-
+			// increment the counter
+			counter++;
+			log.debug("the counter is at " + counter);
                         //max only 1 group output
                         String output = mapper.process(role);
-                        if (output != null) {
+                        if (output != null & counter <= rolesLimit) {
                             try {
                                 log.debug(
                                     "Removing user " + user.getName() + " from role " + role);
